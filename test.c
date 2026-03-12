@@ -36,12 +36,24 @@ do {                                                     \
     }                                                    \
 } while (0)
 
+/* Testing cases
+ * 1. "" (empty message)
+ * 2. "The quick brown fox jumps over the lazy dog" (pangram)
+ * 3. other from spec or online tools
+ */
+
 int main(void) {
     putchar('\n');
 
     /* -------------------------------------------------------------------------------- */
 
     puts("Tesing Secure Hash Algorithm 1 (SHA-1):");
+    test_function(
+        sha1, SHA1_HASH_BYTE, 0,
+        /* M */ "",
+        /* H */ "\xda\x39\xa3\xee\x5e\x6b\x4b\x0d\x32\x55\xbf\xef\x95\x60\x18\x90"
+                "\xaf\xd8\x07\x09"
+    );
     test_function(
         sha1, SHA1_HASH_BYTE, 43,
         /* M */ "The quick brown fox jumps over the lazy dog",
@@ -66,14 +78,14 @@ int main(void) {
 
     puts("Testing Message Digest 5 (MD5):");
     test_function(
-        md5, MD5_HASH_BYTE, 43,
-        /* M */ "The quick brown fox jumps over the lazy dog",
-        /* H */ "\x9e\x10\x7d\x9d\x37\x2b\xb6\x82\x6b\xd8\x1d\x35\x42\xa4\x19\xd6"
-    );
-    test_function(
         md5, MD5_HASH_BYTE, 0,
         /* M */ "",
         /* H */ "\xd4\x1d\x8c\xd9\x8f\x00\xb2\x04\xe9\x80\x09\x98\xec\xf8\x42\x7e"
+    );
+    test_function(
+        md5, MD5_HASH_BYTE, 43,
+        /* M */ "The quick brown fox jumps over the lazy dog",
+        /* H */ "\x9e\x10\x7d\x9d\x37\x2b\xb6\x82\x6b\xd8\x1d\x35\x42\xa4\x19\xd6"
     );
     test_function(
         md5, MD5_HASH_BYTE, 1,
