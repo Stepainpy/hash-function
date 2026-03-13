@@ -67,7 +67,8 @@ void md5_update(const void* data, size_t count) {
         data = (const md5_byte_t*)data + min;
         md5i_ctx.inlen += min; count -= min;
 
-        prev = (md5i_ctx.lenlo += min);
+        prev = md5i_ctx.lenlo;
+        md5i_ctx.lenlo += min * 8;
         if (md5i_ctx.lenlo < prev) ++md5i_ctx.lenup;
 
         if (md5i_ctx.inlen == sizeof md5i_ctx.input)
@@ -79,8 +80,6 @@ void md5_finish(void* hash) {
     md5i_ctx.input[md5i_ctx.inlen++] = 0x80;
     if (md5i_ctx.inlen > 56) md5i_round();
 
-    md5i_ctx.lenup = md5i_ctx.lenup << 3 | md5i_ctx.lenlo >> 29;
-    md5i_ctx.lenlo = md5i_ctx.lenlo << 3;
 #if HSHFUNC_IS_BIG
     md5i_ctx.lenup = hshfunc_bswap32(md5i_ctx.lenup);
     md5i_ctx.lenlo = hshfunc_bswap32(md5i_ctx.lenlo);

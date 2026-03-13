@@ -59,7 +59,7 @@ void sha1_launch(void) {
 }
 
 void sha1_update(const void* data, size_t count) {
-    size_t min, remainder, prev;
+    size_t min, remainder; sha1_word_t prev;
     while (count > 0) {
         remainder = sizeof sha1i_ctx.input - sha1i_ctx.inlen;
         min = count < remainder ? count : remainder;
@@ -68,7 +68,8 @@ void sha1_update(const void* data, size_t count) {
         data = (const sha1_byte_t*)data + min;
         sha1i_ctx.inlen += min; count -= min;
 
-        prev = (sha1i_ctx.lenlo += min);
+        prev = sha1i_ctx.lenlo;
+        sha1i_ctx.lenlo += min * 8;
         if (sha1i_ctx.lenlo < prev) ++sha1i_ctx.lenup;
 
         if (sha1i_ctx.inlen == sizeof sha1i_ctx.input)
@@ -80,8 +81,6 @@ void sha1_finish(void* hash) {
     sha1i_ctx.input[sha1i_ctx.inlen++] = 0x80;
     if (sha1i_ctx.inlen > 56) sha1i_round();
 
-    sha1i_ctx.lenup = sha1i_ctx.lenup << 3 | sha1i_ctx.lenlo >> 29;
-    sha1i_ctx.lenlo = sha1i_ctx.lenlo << 3;
 #if HSHFUNC_IS_LITTLE
     sha1i_ctx.lenup = hshfunc_bswap32(sha1i_ctx.lenup);
     sha1i_ctx.lenlo = hshfunc_bswap32(sha1i_ctx.lenlo);
