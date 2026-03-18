@@ -23,9 +23,10 @@ static void md5i_round(void) {
     md5_word_t W[16]; int i;
 
     memcpy(W, md5i_ctx.input, sizeof md5i_ctx.input);
-#if HSHFUNC_IS_BIG
+    HSHFUNC_IF_BIG(HSHFUNC_BSWAP_32x16(W));
+/* #if HSHFUNC_IS_BIG
     for (i = 0; i < 16; i++) W[i] = hshfunc_bswap32(W[i]);
-#endif
+#endif */
 
     A = md5i_ctx.H[0]; B = md5i_ctx.H[1];
     C = md5i_ctx.H[2]; D = md5i_ctx.H[3];
@@ -80,20 +81,22 @@ void md5_finish(void* hash) {
     md5i_ctx.input[md5i_ctx.inlen++] = 0x80;
     if (md5i_ctx.inlen > 56) md5i_round();
 
-#if HSHFUNC_IS_BIG
+    HSHFUNC_IF_BIG(HSHFUNC_BSWAP_32_TWO(md5i_ctx.lenlo, md5i_ctx.lenup));
+/* #if HSHFUNC_IS_BIG
     md5i_ctx.lenup = hshfunc_bswap32(md5i_ctx.lenup);
     md5i_ctx.lenlo = hshfunc_bswap32(md5i_ctx.lenlo);
-#endif
+#endif */
     memcpy(md5i_ctx.input + 56, &md5i_ctx.lenlo, sizeof md5i_ctx.lenlo);
     memcpy(md5i_ctx.input + 60, &md5i_ctx.lenup, sizeof md5i_ctx.lenup);
     md5i_round();
 
-#if HSHFUNC_IS_BIG
+    HSHFUNC_IF_BIG(HSHFUNC_BSWAP_32x4(md5i_ctx.H));
+/* #if HSHFUNC_IS_BIG
     md5i_ctx.H[0] = hshfunc_bswap32(md5i_ctx.H[0]);
     md5i_ctx.H[1] = hshfunc_bswap32(md5i_ctx.H[1]);
     md5i_ctx.H[2] = hshfunc_bswap32(md5i_ctx.H[2]);
     md5i_ctx.H[3] = hshfunc_bswap32(md5i_ctx.H[3]);
-#endif
+#endif */
     memcpy(hash, md5i_ctx.H, sizeof md5i_ctx.H);
 }
 

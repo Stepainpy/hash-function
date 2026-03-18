@@ -169,9 +169,27 @@ typedef unsigned __int64 hshfunc_u64_t;
     (value) = hshfunc_bswap##bits(value); \
 } while (0)
 
+#define HSHFUNC_BSWAP_B_TWO(bits, fst, snd) do { \
+    (fst) = hshfunc_bswap##bits(fst); \
+    (snd) = hshfunc_bswap##bits(snd); \
+} while (0)
+
 #define HSHFUNC_BSWAP_BxN(number, bits, array) do { \
     HSHFUNC_BSWAP_B_STMT_##number(bits, array) \
 } while (0)
+
+#define HSHFUNC_BSWAP_32_TWO(fst, snd) HSHFUNC_BSWAP_B_TWO(32, fst, snd)
+#define HSHFUNC_BSWAP_32x4(array) HSHFUNC_BSWAP_BxN(4, 32, array)
+#define HSHFUNC_BSWAP_32x5(array) HSHFUNC_BSWAP_BxN(5, 32, array)
+#define HSHFUNC_BSWAP_32x8(array) HSHFUNC_BSWAP_BxN(8, 32, array)
+#define HSHFUNC_BSWAP_32x16(array) HSHFUNC_BSWAP_BxN(16, 32, array)
+
+#define HSHFUNC_BSWAP_64_ONE(value) HSHFUNC_BSWAP_B_ONE(64, value)
+#define HSHFUNC_BSWAP_64_TWO(fst, snd) HSHFUNC_BSWAP_B_TWO(64, fst, snd)
+#define HSHFUNC_BSWAP_64x4(array) HSHFUNC_BSWAP_BxN(4, 64, array)
+#define HSHFUNC_BSWAP_64x5(array) HSHFUNC_BSWAP_BxN(5, 64, array)
+#define HSHFUNC_BSWAP_64x8(array) HSHFUNC_BSWAP_BxN(8, 64, array)
+#define HSHFUNC_BSWAP_64x16(array) HSHFUNC_BSWAP_BxN(16, 64, array)
 
 /* Bit rotation functions */
 

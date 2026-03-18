@@ -69,7 +69,8 @@ static void whirli_round(void) {
     memcpy(M, whirli_ctx.input, sizeof whirli_ctx.input);
     memset(whirli_ctx.input, 0, sizeof whirli_ctx.input);
     whirli_ctx.inlen = 0;
-#if HSHFUNC_IS_BIG
+    HSHFUNC_IF_BIG(HSHFUNC_BSWAP_64x8(M));
+/* #if HSHFUNC_IS_BIG
     M[0] = hshfunc_bswap64(M[0]);
     M[1] = hshfunc_bswap64(M[1]);
     M[2] = hshfunc_bswap64(M[2]);
@@ -78,7 +79,7 @@ static void whirli_round(void) {
     M[5] = hshfunc_bswap64(M[5]);
     M[6] = hshfunc_bswap64(M[6]);
     M[7] = hshfunc_bswap64(M[7]);
-#endif
+#endif */
 
     memcpy(K, whirli_ctx.H, sizeof whirli_ctx.H);
 
@@ -132,19 +133,21 @@ void whirlpool_finish(void* hash) {
     whirli_ctx.input[whirli_ctx.inlen++] = 0x80;
     if (whirli_ctx.inlen > 32) whirli_round();
 
-#if HSHFUNC_IS_LITTLE
+    HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_64x4(whirli_ctx.len));
+/* #if HSHFUNC_IS_LITTLE
     whirli_ctx.len[0] = hshfunc_bswap64(whirli_ctx.len[0]);
     whirli_ctx.len[1] = hshfunc_bswap64(whirli_ctx.len[1]);
     whirli_ctx.len[2] = hshfunc_bswap64(whirli_ctx.len[2]);
     whirli_ctx.len[3] = hshfunc_bswap64(whirli_ctx.len[3]);
-#endif
+#endif */
     memcpy(whirli_ctx.input + 32, whirli_ctx.len + 3, sizeof(whirl_word_t));
     memcpy(whirli_ctx.input + 40, whirli_ctx.len + 2, sizeof(whirl_word_t));
     memcpy(whirli_ctx.input + 40, whirli_ctx.len + 1, sizeof(whirl_word_t));
     memcpy(whirli_ctx.input + 56, whirli_ctx.len + 0, sizeof(whirl_word_t));
     whirli_round();
 
-#if HSHFUNC_IS_BIG
+    HSHFUNC_IF_BIG(HSHFUNC_BSWAP_64x8(whirli_ctx.H));
+/* #if HSHFUNC_IS_BIG
     whirli_ctx.H[0] = hshfunc_bswap64(whirli_ctx.H[0]);
     whirli_ctx.H[1] = hshfunc_bswap64(whirli_ctx.H[1]);
     whirli_ctx.H[2] = hshfunc_bswap64(whirli_ctx.H[2]);
@@ -153,7 +156,7 @@ void whirlpool_finish(void* hash) {
     whirli_ctx.H[5] = hshfunc_bswap64(whirli_ctx.H[5]);
     whirli_ctx.H[6] = hshfunc_bswap64(whirli_ctx.H[6]);
     whirli_ctx.H[7] = hshfunc_bswap64(whirli_ctx.H[7]);
-#endif
+#endif */
     memcpy(hash, whirli_ctx.H, sizeof whirli_ctx.H);
 }
 
