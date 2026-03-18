@@ -47,9 +47,6 @@ static void sha3i_round(sha3_ctx_t* ctx, size_t wcount) {
     for (i = 0; i < wcount; i++) {
         T[0] = ((const sha3_word_t*)ctx->input)[i];
         HSHFUNC_IF_BIG(HSHFUNC_BSWAP_64_ONE(T[0]));
-/* #if HSHFUNC_IS_BIG
-        T[0] = hshfunc_bswap64(T[0]);
-#endif */
         ctx->S[i] ^= T[0];
     }
     memset(ctx->input, 0, sizeof(sha3_word_t) * wcount);
@@ -111,15 +108,6 @@ sha3i_update_template(224)
 sha3i_update_template(256)
 sha3i_update_template(384)
 sha3i_update_template(512)
-
-/* #if HSHFUNC_IS_BIG
-#  define sha3i_bswap64xN(array, N) do {      \
-    int i; for (i = 0; i < N; i++)            \
-        array[i] = hshfunc_bswap64(array[i]); \
-} while (0)
-#else
-#  define sha3i_bswap64xN(array, N)
-#endif */
 
 #define sha3i_finish_template(prefix, outbytes) \
 void sha3_##prefix##_finish(void* hash) {                                      \

@@ -21,9 +21,7 @@ static void sha1i_round(void) {
 
     memcpy(W, sha1i_ctx.input, sizeof sha1i_ctx.input);
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_32x16(W));
-/* #if HSHFUNC_IS_LITTLE
-    for (i =  0; i < 16; i++) W[i] = hshfunc_bswap32(W[i]);
-#endif */
+
     for (i = 16; i < 80; i++)
         W[i] = sha1i_rotl(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
 
@@ -83,21 +81,10 @@ void sha1_finish(void* hash) {
     if (sha1i_ctx.inlen > 56) sha1i_round();
 
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_32_TWO(sha1i_ctx.lenlo, sha1i_ctx.lenup));
-/* #if HSHFUNC_IS_LITTLE
-    sha1i_ctx.lenup = hshfunc_bswap32(sha1i_ctx.lenup);
-    sha1i_ctx.lenlo = hshfunc_bswap32(sha1i_ctx.lenlo);
-#endif */
     memcpy(sha1i_ctx.input + 56, &sha1i_ctx.lenup, sizeof sha1i_ctx.lenup);
     memcpy(sha1i_ctx.input + 60, &sha1i_ctx.lenlo, sizeof sha1i_ctx.lenlo);
     sha1i_round();
 
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_32x5(sha1i_ctx.H));
-/* #if HSHFUNC_IS_LITTLE
-    sha1i_ctx.H[0] = hshfunc_bswap32(sha1i_ctx.H[0]);
-    sha1i_ctx.H[1] = hshfunc_bswap32(sha1i_ctx.H[1]);
-    sha1i_ctx.H[2] = hshfunc_bswap32(sha1i_ctx.H[2]);
-    sha1i_ctx.H[3] = hshfunc_bswap32(sha1i_ctx.H[3]);
-    sha1i_ctx.H[4] = hshfunc_bswap32(sha1i_ctx.H[4]);
-#endif */
     memcpy(hash, sha1i_ctx.H, sizeof sha1i_ctx.H);
 }

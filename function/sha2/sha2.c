@@ -42,9 +42,7 @@ static void sha2i_sround(sha2i_sctx_t* ctx) {
 
     memcpy(W, ctx->input, sizeof ctx->input);
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_32x16(W));
-/* #if HSHFUNC_IS_LITTLE
-    for (i =  0; i < 16; i++) W[i] = hshfunc_bswap32(W[i]);
-#endif */
+
     for (i = 16; i < 64; i++) {
         S0 = sha2i_rotr32(W[i - 15],  7) ^ sha2i_rotr32(W[i - 15], 18) ^ (W[i - 15] >>  3);
         S1 = sha2i_rotr32(W[i -  2], 17) ^ sha2i_rotr32(W[i -  2], 19) ^ (W[i -  2] >> 10);
@@ -80,9 +78,7 @@ static void sha2i_dround(sha2i_dctx_t* ctx) {
 
     memcpy(W, ctx->input, sizeof ctx->input);
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_64x16(W));
-/* #if HSHFUNC_IS_LITTLE
-    for (i =  0; i < 16; i++) W[i] = hshfunc_bswap64(W[i]);
-#endif */
+
     for (i = 16; i < 80; i++) {
         S0 = sha2i_rotr64(W[i - 15],  1) ^ sha2i_rotr64(W[i - 15],  8) ^ (W[i - 15] >> 7);
         S1 = sha2i_rotr64(W[i -  2], 19) ^ sha2i_rotr64(W[i -  2], 61) ^ (W[i -  2] >> 6);
@@ -200,54 +196,6 @@ sha2i_update_template(512, sha2_dword_t, dround)
 
 sha2i_update_template(512_224, sha2_dword_t, dround)
 sha2i_update_template(512_256, sha2_dword_t, dround)
-
-/* #if HSHFUNC_IS_LITTLE
-#  define sha2i_bswap_u32x2(A0, A1) do { \
-    A0 = hshfunc_bswap32(A0); \
-    A1 = hshfunc_bswap32(A1); \
-} while (0)
-#else
-#  define sha2i_bswap_u32x2(A0, A1)
-#endif
-
-#if HSHFUNC_IS_LITTLE
-#  define sha2i_bswap_u64x2(A0, A1) do { \
-    A0 = hshfunc_bswap64(A0); \
-    A1 = hshfunc_bswap64(A1); \
-} while (0)
-#else
-#  define sha2i_bswap_u64x2(A0, A1)
-#endif
-
-#if HSHFUNC_IS_LITTLE
-#  define sha2i_bswap_u32x8(array) do {   \
-    array[0] = hshfunc_bswap32(array[0]); \
-    array[1] = hshfunc_bswap32(array[1]); \
-    array[2] = hshfunc_bswap32(array[2]); \
-    array[3] = hshfunc_bswap32(array[3]); \
-    array[4] = hshfunc_bswap32(array[4]); \
-    array[5] = hshfunc_bswap32(array[5]); \
-    array[6] = hshfunc_bswap32(array[6]); \
-    array[7] = hshfunc_bswap32(array[7]); \
-} while (0)
-#else
-#  define sha2i_bswap_u32x8(array)
-#endif
-
-#if HSHFUNC_IS_LITTLE
-#  define sha2i_bswap_u64x8(array) do {   \
-    array[0] = hshfunc_bswap64(array[0]); \
-    array[1] = hshfunc_bswap64(array[1]); \
-    array[2] = hshfunc_bswap64(array[2]); \
-    array[3] = hshfunc_bswap64(array[3]); \
-    array[4] = hshfunc_bswap64(array[4]); \
-    array[5] = hshfunc_bswap64(array[5]); \
-    array[6] = hshfunc_bswap64(array[6]); \
-    array[7] = hshfunc_bswap64(array[7]); \
-} while (0)
-#else
-#  define sha2i_bswap_u64x8(array)
-#endif */
 
 #define sha2i_finish_template(prefix, word_t, roundfn, outbytes, bits) \
 void sha2_##prefix##_finish(void* hash) {                                                       \

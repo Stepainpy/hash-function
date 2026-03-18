@@ -67,19 +67,7 @@ static void whirli_round(void) {
     whirl_word_t M[8], C[8], K[8], Cr[8] = {0}; int i;
 
     memcpy(M, whirli_ctx.input, sizeof whirli_ctx.input);
-    memset(whirli_ctx.input, 0, sizeof whirli_ctx.input);
-    whirli_ctx.inlen = 0;
     HSHFUNC_IF_BIG(HSHFUNC_BSWAP_64x8(M));
-/* #if HSHFUNC_IS_BIG
-    M[0] = hshfunc_bswap64(M[0]);
-    M[1] = hshfunc_bswap64(M[1]);
-    M[2] = hshfunc_bswap64(M[2]);
-    M[3] = hshfunc_bswap64(M[3]);
-    M[4] = hshfunc_bswap64(M[4]);
-    M[5] = hshfunc_bswap64(M[5]);
-    M[6] = hshfunc_bswap64(M[6]);
-    M[7] = hshfunc_bswap64(M[7]);
-#endif */
 
     memcpy(K, whirli_ctx.H, sizeof whirli_ctx.H);
 
@@ -99,6 +87,9 @@ static void whirli_round(void) {
     whirli_ctx.H[5] ^= M[5] ^ C[5];
     whirli_ctx.H[6] ^= M[6] ^ C[6];
     whirli_ctx.H[7] ^= M[7] ^ C[7];
+
+    memset(whirli_ctx.input, 0, sizeof whirli_ctx.input);
+    whirli_ctx.inlen = 0;
 }
 
 void whirlpool_launch(void) {
@@ -134,12 +125,6 @@ void whirlpool_finish(void* hash) {
     if (whirli_ctx.inlen > 32) whirli_round();
 
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_64x4(whirli_ctx.len));
-/* #if HSHFUNC_IS_LITTLE
-    whirli_ctx.len[0] = hshfunc_bswap64(whirli_ctx.len[0]);
-    whirli_ctx.len[1] = hshfunc_bswap64(whirli_ctx.len[1]);
-    whirli_ctx.len[2] = hshfunc_bswap64(whirli_ctx.len[2]);
-    whirli_ctx.len[3] = hshfunc_bswap64(whirli_ctx.len[3]);
-#endif */
     memcpy(whirli_ctx.input + 32, whirli_ctx.len + 3, sizeof(whirl_word_t));
     memcpy(whirli_ctx.input + 40, whirli_ctx.len + 2, sizeof(whirl_word_t));
     memcpy(whirli_ctx.input + 40, whirli_ctx.len + 1, sizeof(whirl_word_t));
@@ -147,16 +132,6 @@ void whirlpool_finish(void* hash) {
     whirli_round();
 
     HSHFUNC_IF_BIG(HSHFUNC_BSWAP_64x8(whirli_ctx.H));
-/* #if HSHFUNC_IS_BIG
-    whirli_ctx.H[0] = hshfunc_bswap64(whirli_ctx.H[0]);
-    whirli_ctx.H[1] = hshfunc_bswap64(whirli_ctx.H[1]);
-    whirli_ctx.H[2] = hshfunc_bswap64(whirli_ctx.H[2]);
-    whirli_ctx.H[3] = hshfunc_bswap64(whirli_ctx.H[3]);
-    whirli_ctx.H[4] = hshfunc_bswap64(whirli_ctx.H[4]);
-    whirli_ctx.H[5] = hshfunc_bswap64(whirli_ctx.H[5]);
-    whirli_ctx.H[6] = hshfunc_bswap64(whirli_ctx.H[6]);
-    whirli_ctx.H[7] = hshfunc_bswap64(whirli_ctx.H[7]);
-#endif */
     memcpy(hash, whirli_ctx.H, sizeof whirli_ctx.H);
 }
 
