@@ -1,7 +1,7 @@
 #ifndef HASH_FUNCTION_CONFIG_H
 #define HASH_FUNCTION_CONFIG_H
 
-/* Compiler detection */
+/* Detecting compiler */
 
 #if defined(__GNUC__)
 #  define HSHFUNC_ON_GNUC 1
@@ -12,6 +12,29 @@
 #  endif
 #elif defined(_MSC_VER)
 #  define HSHFUNC_ON_MSVC 1
+#else
+#  error Unsupported compiler
+#endif
+
+/* Detecting endianness */
+
+#if HSHFUNC_ON_GNUC
+#  if defined(__BYTE_ORDER__)
+#    if   __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#      define HSHFUNC_IS_LITTLE 1
+#      define HSHFUNC_IS_BIG    0
+#    elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#      define HSHFUNC_IS_LITTLE 0
+#      define HSHFUNC_IS_BIG    1
+#    else
+#      error Unknown endianness
+#    endif
+#  else
+#    error Not defined __BYTE_ORDER__
+#  endif
+#elif HSHFUNC_ON_MSVC
+#  define HSHFUNC_IS_LITTLE 1
+#  define HSHFUNC_IS_BIG    0
 #else
 #  error Unsupported compiler
 #endif
@@ -80,28 +103,75 @@ typedef unsigned __int64 hshfunc_u64_t;
 #  error Unsupported compiler
 #endif
 
-/* Detecting endianness */
+/* If condition for preprocessor */
 
-#if HSHFUNC_ON_GNUC
-#  if defined(__BYTE_ORDER__)
-#    if   __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#      define HSHFUNC_IS_LITTLE 1
-#      define HSHFUNC_IS_BIG    0
-#    elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-#      define HSHFUNC_IS_LITTLE 0
-#      define HSHFUNC_IS_BIG    1
-#    else
-#      error Unknown endianness
-#    endif
-#  else
-#    error Not defined __BYTE_ORDER__
-#  endif
-#elif HSHFUNC_ON_MSVC
-#  define HSHFUNC_IS_LITTLE 1
-#  define HSHFUNC_IS_BIG    0
-#else
-#  error Unsupported compiler
-#endif
+#define HSHFUNC_CONCAT_(left, right) left ## right
+#define HSHFUNC_CONCAT(left, right) HSHFUNC_CONCAT_(left, right)
+
+#define HSHFUNC_IF_0(stmt)
+#define HSHFUNC_IF_1(stmt) stmt
+#define HSHFUNC_IF(cond, stmt) HSHFUNC_CONCAT(HSHFUNC_IF_, cond)(stmt)
+
+#define HSHFUNC_IF_LITTLE(stmt) HSHFUNC_IF(HSHFUNC_IS_LITTLE, stmt)
+#define HSHFUNC_IF_BIG(stmt) HSHFUNC_IF(HSHFUNC_IS_BIG, stmt)
+
+/* Byte swapping one, pair and blocks */
+
+#define HSHFUNC_BSWAP_B_STMT_1(bits, array) \
+    (array)[0] = hshfunc_bswap##bits((array)[0]);
+#define HSHFUNC_BSWAP_B_STMT_2(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_1(bits, array)     \
+    (array)[1] = hshfunc_bswap##bits((array)[1]);
+#define HSHFUNC_BSWAP_B_STMT_3(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_2(bits, array)     \
+    (array)[2] = hshfunc_bswap##bits((array)[2]);
+#define HSHFUNC_BSWAP_B_STMT_4(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_3(bits, array)     \
+    (array)[3] = hshfunc_bswap##bits((array)[3]);
+#define HSHFUNC_BSWAP_B_STMT_5(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_4(bits, array)     \
+    (array)[4] = hshfunc_bswap##bits((array)[4]);
+#define HSHFUNC_BSWAP_B_STMT_6(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_5(bits, array)     \
+    (array)[5] = hshfunc_bswap##bits((array)[5]);
+#define HSHFUNC_BSWAP_B_STMT_7(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_6(bits, array)     \
+    (array)[6] = hshfunc_bswap##bits((array)[6]);
+#define HSHFUNC_BSWAP_B_STMT_8(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_7(bits, array)     \
+    (array)[7] = hshfunc_bswap##bits((array)[7]);
+#define HSHFUNC_BSWAP_B_STMT_9(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_8(bits, array)     \
+    (array)[8] = hshfunc_bswap##bits((array)[8]);
+#define HSHFUNC_BSWAP_B_STMT_10(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_9(bits, array)     \
+    (array)[9] = hshfunc_bswap##bits((array)[9]);
+#define HSHFUNC_BSWAP_B_STMT_11(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_10(bits, array)     \
+    (array)[10] = hshfunc_bswap##bits((array)[10]);
+#define HSHFUNC_BSWAP_B_STMT_12(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_11(bits, array)     \
+    (array)[11] = hshfunc_bswap##bits((array)[11]);
+#define HSHFUNC_BSWAP_B_STMT_13(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_12(bits, array)     \
+    (array)[12] = hshfunc_bswap##bits((array)[12]);
+#define HSHFUNC_BSWAP_B_STMT_14(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_13(bits, array)     \
+    (array)[13] = hshfunc_bswap##bits((array)[13]);
+#define HSHFUNC_BSWAP_B_STMT_15(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_14(bits, array)     \
+    (array)[14] = hshfunc_bswap##bits((array)[14]);
+#define HSHFUNC_BSWAP_B_STMT_16(bits, array) \
+    HSHFUNC_BSWAP_B_STMT_15(bits, array)     \
+    (array)[15] = hshfunc_bswap##bits((array)[15]);
+
+#define HSHFUNC_BSWAP_B_ONE(bits, value) do { \
+    (value) = hshfunc_bswap##bits(value); \
+} while (0)
+
+#define HSHFUNC_BSWAP_BxN(number, bits, array) do { \
+    HSHFUNC_BSWAP_B_STMT_##number(bits, array) \
+} while (0)
 
 /* Bit rotation functions */
 
