@@ -16,7 +16,7 @@
 #define BLAKE_224_SALT_BITS 128
 #define BLAKE_224_SALT_BYTE 16
 
-void blake_224_launch(const void* salt);
+int  blake_224_launch(const void* salt, size_t size);
 void blake_224_update(const void* data, size_t count);
 void blake_224_finish(void* hash);
 
@@ -25,7 +25,7 @@ void blake_224_finish(void* hash);
 #define BLAKE_256_SALT_BITS 128
 #define BLAKE_256_SALT_BYTE 16
 
-void blake_256_launch(const void* salt);
+int  blake_256_launch(const void* salt, size_t size);
 void blake_256_update(const void* data, size_t count);
 void blake_256_finish(void* hash);
 
@@ -34,7 +34,7 @@ void blake_256_finish(void* hash);
 #define BLAKE_384_SALT_BITS 256
 #define BLAKE_384_SALT_BYTE 32
 
-void blake_384_launch(const void* salt);
+int  blake_384_launch(const void* salt, size_t size);
 void blake_384_update(const void* data, size_t count);
 void blake_384_finish(void* hash);
 
@@ -43,7 +43,7 @@ void blake_384_finish(void* hash);
 #define BLAKE_512_SALT_BITS 256
 #define BLAKE_512_SALT_BYTE 32
 
-void blake_512_launch(const void* salt);
+int  blake_512_launch(const void* salt, size_t size);
 void blake_512_update(const void* data, size_t count);
 void blake_512_finish(void* hash);
 

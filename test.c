@@ -19,28 +19,34 @@
 
 #define SHOW0(x)
 #define SHOW1(x) x
+#define COMMA ,
 
 #define test_function(name, usesalt, hashsz, saltsz, msgsz, msg, salt, hash) \
-do {                                                     \
-    unsigned char H[hashsz]; int i;                      \
-                                                         \
-    name##_launch(SHOW##usesalt(salt));                  \
-    name##_update(msg, msgsz);                           \
-    name##_finish(H);                                    \
-                                                         \
-    printf("- Check hash (load %2i bytes) ... ", msgsz); \
-    if (memcmp(H, hash, hashsz) == 0) puts(OK);          \
-    else {                                               \
-        puts(FAIL);                                      \
-        printf("  > expected: ");                        \
-        for (i = 0; i < hashsz; i++)                     \
-            printf("%02x", hash[i] & 0xFF);              \
-        putchar('\n');                                   \
-        printf("  > received: ");                        \
-        for (i = 0; i < hashsz; i++)                     \
-            printf("%02x", H[i]);                        \
-        putchar('\n');                                   \
-    }                                                    \
+do {                                                      \
+    unsigned char H[hashsz]; int i;                       \
+                                                          \
+    SHOW##usesalt(                                        \
+    int rc;                                               \
+    printf("- Set salt with %2i bytes     ... ", saltsz); \
+    rc = )                                                \
+    name##_launch(SHOW##usesalt(salt COMMA saltsz));      \
+    SHOW##usesalt(puts(rc == 0 ? OK : FAIL);)             \
+    name##_update(msg, msgsz);                            \
+    name##_finish(H);                                     \
+                                                          \
+    printf("- Check hash (load %2i bytes) ... ", msgsz);  \
+    if (memcmp(H, hash, hashsz) == 0) puts(OK);           \
+    else {                                                \
+        puts(FAIL);                                       \
+        printf("  > expected: ");                         \
+        for (i = 0; i < hashsz; i++)                      \
+            printf("%02x", hash[i] & 0xFF);               \
+        putchar('\n');                                    \
+        printf("  > received: ");                         \
+        for (i = 0; i < hashsz; i++)                      \
+            printf("%02x", H[i]);                         \
+        putchar('\n');                                    \
+    }                                                     \
 } while (0)
 
 /* Testing cases

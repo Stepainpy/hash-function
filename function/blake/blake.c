@@ -116,7 +116,9 @@ static void blakei_dround(blake_dctx_t* ctx) {
 
 /* -------------------------------------------------------------------------- */
 
-void blake_224_launch(const void* salt) {
+int blake_224_launch(const void* salt, size_t size) {
+    if (size != BLAKE_224_SALT_BYTE) return 1;
+
     memset(&blakei_224_ctx, 0, sizeof blakei_224_ctx);
     memcpy(blakei_224_ctx.S, salt, BLAKE_224_SALT_BYTE);
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_32x4(blakei_224_ctx.S));
@@ -125,6 +127,8 @@ void blake_224_launch(const void* salt) {
     blakei_224_ctx.H[2] = 0x3070dd17; blakei_224_ctx.H[3] = 0xf70e5939;
     blakei_224_ctx.H[4] = 0xffc00b31; blakei_224_ctx.H[5] = 0x68581511;
     blakei_224_ctx.H[6] = 0x64f98fa7; blakei_224_ctx.H[7] = 0xbefa4fa4;
+
+    return 0;
 }
 
 void blake_224_update(const void* data, size_t count) {
@@ -160,7 +164,9 @@ void blake_224_finish(void* hash) {
     memcpy(hash, blakei_224_ctx.H, BLAKE_224_HASH_BYTE);
 }
 
-void blake_256_launch(const void* salt) {
+int blake_256_launch(const void* salt, size_t size) {
+    if (size != BLAKE_256_SALT_BYTE) return 1;
+
     memset(&blakei_256_ctx, 0, sizeof blakei_256_ctx);
     memcpy(blakei_256_ctx.S, salt, BLAKE_256_SALT_BYTE);
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_32x4(blakei_256_ctx.S));
@@ -169,6 +175,8 @@ void blake_256_launch(const void* salt) {
     blakei_256_ctx.H[2] = 0x3c6ef372; blakei_256_ctx.H[3] = 0xa54ff53a;
     blakei_256_ctx.H[4] = 0x510e527f; blakei_256_ctx.H[5] = 0x9b05688c;
     blakei_256_ctx.H[6] = 0x1f83d9ab; blakei_256_ctx.H[7] = 0x5be0cd19;
+
+    return 0;
 }
 
 void blake_256_update(const void* data, size_t count) {
@@ -207,7 +215,9 @@ void blake_256_finish(void* hash) {
 
 /* -------------------------------------------------------------------------- */
 
-void blake_384_launch(const void* salt) {
+int blake_384_launch(const void* salt, size_t size) {
+    if (size != BLAKE_384_SALT_BYTE) return 1;
+
     memset(&blakei_384_ctx, 0, sizeof blakei_384_ctx);
     memcpy(blakei_384_ctx.S, salt, BLAKE_384_SALT_BYTE);
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_64x4(blakei_384_ctx.S));
@@ -218,6 +228,8 @@ void blake_384_launch(const void* salt) {
     blakei_384_ctx.H[4] = 0x67332667ffc00b31; blakei_384_ctx.H[5] = 0x8eb44a8768581511;
     blakei_384_ctx.H[6] = 0xdb0c2e0d64f98fa7; blakei_384_ctx.H[7] = 0x47b5481dbefa4fa4;
     HSHFUNC_U64_WARN_END
+
+    return 0;
 }
 
 void blake_384_update(const void* data, size_t count) {
@@ -253,7 +265,9 @@ void blake_384_finish(void* hash) {
     memcpy(hash, blakei_384_ctx.H, BLAKE_384_HASH_BYTE);
 }
 
-void blake_512_launch(const void* salt) {
+int blake_512_launch(const void* salt, size_t size) {
+    if (size != BLAKE_512_SALT_BYTE) return 1;
+
     memset(&blakei_512_ctx, 0, sizeof blakei_512_ctx);
     memcpy(blakei_512_ctx.S, salt, BLAKE_512_SALT_BYTE);
     HSHFUNC_IF_LITTLE(HSHFUNC_BSWAP_64x4(blakei_512_ctx.S));
@@ -264,6 +278,8 @@ void blake_512_launch(const void* salt) {
     blakei_512_ctx.H[4] = 0x510e527fade682d1; blakei_512_ctx.H[5] = 0x9b05688c2b3e6c1f;
     blakei_512_ctx.H[6] = 0x1f83d9abfb41bd6b; blakei_512_ctx.H[7] = 0x5be0cd19137e2179;
     HSHFUNC_U64_WARN_END
+
+    return 0;
 }
 
 void blake_512_update(const void* data, size_t count) {
