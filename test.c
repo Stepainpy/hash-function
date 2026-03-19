@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "whirlpool/whirlpool.h"
+#include "blake2b/blake2b.h"
 #include "blake/blake.h"
 #include "sha1/sha1.h"
 #include "sha2/sha2.h"
@@ -544,6 +545,78 @@ int main(void) {
                 "\xc1\x50\xb2\xd5\x00\xfb\x33\xf5\x1c\x52\xaf\xc9\x9d\x35\x8a\x2f"
                 "\x13\x74\xb8\xa3\x8b\xba\x79\x74\xe7\xf6\xef\x79\xca\xb1\x6f\x22"
                 "\xce\x1e\x64\x9d\x6e\x01\xad\x95\x89\xc2\x13\x04\x5d\x54\x5d\xde"
+    );
+    putchar('\n');
+
+    /* -------------------------------------------------------------------------------- */
+
+    puts("Testing BLAKE2b:");
+    test_function(
+        blake2b, 1, BLAKE2B_HASH_BYTE, 0, 0,
+        /* M */ "",
+        /* S */ "",
+        /* H */ "\x78\x6a\x02\xf7\x42\x01\x59\x03\xc6\xc6\xfd\x85\x25\x52\xd2\x72"
+                "\x91\x2f\x47\x40\xe1\x58\x47\x61\x8a\x86\xe2\x17\xf7\x1f\x54\x19"
+                "\xd2\x5e\x10\x31\xaf\xee\x58\x53\x13\x89\x64\x44\x93\x4e\xb0\x4b"
+                "\x90\x3a\x68\x5b\x14\x48\xb7\x55\xd5\x6f\x70\x1a\xfe\x9b\xe2\xce"
+    );
+    test_function(
+        blake2b, 1, BLAKE2B_HASH_BYTE, 0, 43,
+        /* M */ "The quick brown fox jumps over the lazy dog",
+        /* S */ "",
+        /* H */ "\xa8\xad\xd4\xbd\xdd\xfd\x93\xe4\x87\x7d\x27\x46\xe6\x28\x17\xb1"
+                "\x16\x36\x4a\x1f\xa7\xbc\x14\x8d\x95\x09\x0b\xc7\x33\x3b\x36\x73"
+                "\xf8\x24\x01\xcf\x7a\xa2\xe4\xcb\x1e\xcd\x90\x29\x6e\x3f\x14\xcb"
+                "\x54\x13\xf8\xed\x77\xbe\x73\x04\x5b\x13\x91\x4c\xdc\xd6\xa9\x18"
+    );
+    test_function(
+        blake2b, 1, BLAKE2B_HASH_BYTE, 0, 3,
+        /* M */ "abc",
+        /* S */ "",
+        /* H */ "\xba\x80\xa5\x3f\x98\x1c\x4d\x0d\x6a\x27\x97\xb6\x9f\x12\xf6\xe9"
+                "\x4c\x21\x2f\x14\x68\x5a\xc4\xb7\x4b\x12\xbb\x6f\xdb\xff\xa2\xd1"
+                "\x7d\x87\xc5\x39\x2a\xab\x79\x2d\xc2\x52\xd5\xde\x45\x33\xcc\x95"
+                "\x18\xd3\x8a\xa8\xdb\xf1\x92\x5a\xb9\x23\x86\xed\xd4\x00\x99\x23"
+    );
+
+    test_function(
+        blake2b, 1, BLAKE2B_HASH_BYTE, 43, 43,
+        /* M */ "The quick brown fox jumps over the lazy dog",
+        /* S */ "god yzal eht revo spmuj xof nworb kciuq ehT",
+        /* H */ "\xf5\x97\xe7\x00\x0b\xe3\xa7\x3a\x99\x40\x4b\x1b\x85\xe2\x5b\x0c"
+                "\x90\x86\x66\x15\x58\xda\x52\x0c\xcd\xe4\x52\xae\x9e\xe3\x80\x40"
+                "\xf4\x53\x5d\x97\x9d\x05\x9d\xc2\x30\xd0\xb0\x41\x3f\x45\x4c\xc8"
+                "\xd3\xdb\xb9\xfd\x28\x8a\xd3\xd0\x74\x1b\x27\x5a\x8a\x63\xf5\x0c"
+    );
+    test_function(
+        blake2b, 1, BLAKE2B_HASH_BYTE, 0, 387,
+        /* M */ "This document describes the cryptographic hash function BLAKE2 a"
+                "nd makes the algorithm specification and C source code convenien"
+                "tly available to the Internet community. BLAKE2 comes in two mai"
+                "n flavors: BLAKE2b is optimized for 64-bit platforms and BLAKE2s"
+                " for smaller architectures. BLAKE2 can be directly keyed, making"
+                " it functionally equivalent to a Message Authentication Code (MA"
+                "C).",
+        /* S */ "",
+        /* H */ "\x0e\xf0\x62\x01\x9b\x7b\x4d\x63\x21\x30\xd4\x36\x42\x42\xf9\x5b"
+                "\x31\x77\x9a\x8b\x83\xab\xf2\x8d\x05\xdd\x4f\xb0\x71\xdd\x93\xec"
+                "\x73\xef\x36\xea\x34\xd8\xa1\x4d\x4e\x93\x2c\x80\x37\x38\x87\x4d"
+                "\x8b\xb8\xfa\xbf\x81\x6a\x8f\x58\xfb\x6b\x63\x77\xcc\xf7\x71\x55"
+    );
+    test_function(
+        blake2b, 1, BLAKE2B_HASH_BYTE, 43, 387,
+        /* M */ "This document describes the cryptographic hash function BLAKE2 a"
+                "nd makes the algorithm specification and C source code convenien"
+                "tly available to the Internet community. BLAKE2 comes in two mai"
+                "n flavors: BLAKE2b is optimized for 64-bit platforms and BLAKE2s"
+                " for smaller architectures. BLAKE2 can be directly keyed, making"
+                " it functionally equivalent to a Message Authentication Code (MA"
+                "C).",
+        /* S */ "god yzal eht revo spmuj xof nworb kciuq ehT",
+        /* H */ "\x2f\x91\x03\x77\xa1\xf3\x38\x0c\xc9\xcd\xe6\x9d\x34\x25\x95\xf3"
+                "\xd9\x99\xd8\xc3\x97\xa9\xa9\x26\xbb\xc9\x3a\xd1\x26\x46\xdf\x9b"
+                "\xd2\x44\x6f\xd2\x6f\x13\xf9\x98\xb2\x9c\x88\x59\x71\x13\xe2\x28"
+                "\x6f\x2a\x71\x7b\x30\xce\xcc\xcc\x4a\x2e\xe4\xba\xcf\xa4\x2b\xc3"
     );
     putchar('\n');
 
