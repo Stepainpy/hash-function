@@ -3,6 +3,7 @@
 
 #include "whirlpool/whirlpool.h"
 #include "blake2b/blake2b.h"
+#include "blake2s/blake2s.h"
 #include "blake/blake.h"
 #include "sha1/sha1.h"
 #include "sha2/sha2.h"
@@ -617,6 +618,66 @@ int main(void) {
                 "\xd9\x99\xd8\xc3\x97\xa9\xa9\x26\xbb\xc9\x3a\xd1\x26\x46\xdf\x9b"
                 "\xd2\x44\x6f\xd2\x6f\x13\xf9\x98\xb2\x9c\x88\x59\x71\x13\xe2\x28"
                 "\x6f\x2a\x71\x7b\x30\xce\xcc\xcc\x4a\x2e\xe4\xba\xcf\xa4\x2b\xc3"
+    );
+    putchar('\n');
+
+    /* -------------------------------------------------------------------------------- */
+
+    puts("Testing BLAKE2s:");
+    test_function(
+        blake2s, 1, BLAKE2S_HASH_BYTE, 0, 0,
+        /* M */ "",
+        /* S */ "",
+        /* H */ "\x69\x21\x7a\x30\x79\x90\x80\x94\xe1\x11\x21\xd0\x42\x35\x4a\x7c"
+                "\x1f\x55\xb6\x48\x2c\xa1\xa5\x1e\x1b\x25\x0d\xfd\x1e\xd0\xee\xf9"
+    );
+    test_function(
+        blake2s, 1, BLAKE2S_HASH_BYTE, 0, 43,
+        /* M */ "The quick brown fox jumps over the lazy dog",
+        /* S */ "",
+        /* H */ "\x60\x6b\xee\xec\x74\x3c\xcb\xef\xf6\xcb\xcd\xf5\xd5\x30\x2a\xa8"
+                "\x55\xc2\x56\xc2\x9b\x88\xc8\xed\x33\x1e\xa1\xa6\xbf\x3c\x88\x12"
+    );
+    test_function(
+        blake2s, 1, BLAKE2S_HASH_BYTE, 0, 3,
+        /* M */ "abc",
+        /* S */ "",
+        /* H */ "\x50\x8c\x5e\x8c\x32\x7c\x14\xe2\xe1\xa7\x2b\xa3\x4e\xeb\x45\x2f"
+                "\x37\x45\x8b\x20\x9e\xd6\x3a\x29\x4d\x99\x9b\x4c\x86\x67\x59\x82"
+    );
+
+    test_function(
+        blake2s, 1, BLAKE2S_HASH_BYTE, 32, 43,
+        /* M */ "The quick brown fox jumps over the lazy dog",
+        /* S */ "god yzal eht revo spmuj xof nwor",
+        /* H */ "\x3b\xa0\xce\xac\x92\xff\x88\x5a\x56\x18\x55\xb0\x99\xec\x48\xc7"
+                "\x35\x0e\x43\xfe\xf0\x9d\xc7\x5e\x38\x8c\xaf\x15\x0f\x0c\xa5\xa3"
+    );
+    test_function(
+        blake2s, 1, BLAKE2S_HASH_BYTE, 0, 387,
+        /* M */ "This document describes the cryptographic hash function BLAKE2 a"
+                "nd makes the algorithm specification and C source code convenien"
+                "tly available to the Internet community. BLAKE2 comes in two mai"
+                "n flavors: BLAKE2b is optimized for 64-bit platforms and BLAKE2s"
+                " for smaller architectures. BLAKE2 can be directly keyed, making"
+                " it functionally equivalent to a Message Authentication Code (MA"
+                "C).",
+        /* S */ "",
+        /* H */ "\x05\x30\x58\xba\x5a\x0d\x77\xa5\xce\xad\x10\xf1\x0f\x4e\x60\xd4"
+                "\x75\x0a\x55\xb2\x8c\xce\x23\x1a\x86\x64\x6b\xec\x0f\xbd\xf5\x4c"
+    );
+    test_function(
+        blake2s, 1, BLAKE2S_HASH_BYTE, 32, 387,
+        /* M */ "This document describes the cryptographic hash function BLAKE2 a"
+                "nd makes the algorithm specification and C source code convenien"
+                "tly available to the Internet community. BLAKE2 comes in two mai"
+                "n flavors: BLAKE2b is optimized for 64-bit platforms and BLAKE2s"
+                " for smaller architectures. BLAKE2 can be directly keyed, making"
+                " it functionally equivalent to a Message Authentication Code (MA"
+                "C).",
+        /* S */ "god yzal eht revo spmuj xof nwor",
+        /* H */ "\xd1\x8b\x10\xf8\xd3\x24\xdf\xad\xf2\xfe\x88\x6b\x87\xb3\x75\xb3"
+                "\xa9\x53\xda\x95\x66\xee\x58\x7b\x36\x09\x0a\x37\x64\x49\x71\xec"
     );
     putchar('\n');
 
